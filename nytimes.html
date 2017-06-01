@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Desserts!</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" rel="stylesheet" integrity="sha384-Xqcy5ttufkC3rBa8EdiAyA1VgOGrmel2Y+wxm4K3kI3fcjTWlDWrlnxyD6hOi3PF" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="jumbotron">
+      <center><h1><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>New York Times Search</h1></center>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Search Parameters</h3>
+      </div>
+      <div class="panel-body">
+        <form id="search-parameters">
+          <label for="search-term">Search Term:</label><br>
+          <input type="text" id="term-input"><br>
+          
+          <br><label for="numRecords">Number of Records to Retrieve</label><br>
+          <input type="text" id="num-input"><br>
+          
+          <br><label for="startYear">Start Year (Optional):</label><br>
+          <input type="text" id="startYear-input"><br>
+          
+          <br><label for="end-Year">End Year (Optional):</label><br>
+          <input type="text" id="endYear-input"><br>
+          
+          
+          <br><button id="searchBtn" type="submit" class="btn btn-success">Search</button>
+          <button id="clearBtn" class="btn btn-success">Clear Results</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Top Articles</h3>
+      </div>
+      <div class="panel-body" id="articles"></div>
+    </div>
+  </div>
+
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript">
+    
+//var searchTerm = $("#searchBtn").val().trim();
+//     var userkey = "cb0e0c426f6c48d089f6bb0fef29bddb";
+//     var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json" 
+//      url += '?' + $.param({
+//      'api-key': userkey
+//     });
+
+    $("#searchBtn").on("click", function() {
+        event.preventDefault();
+        var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        var searchTerm = $("#term-input").val().trim();
+        var startYr = $("#startYear-input").val().trim();
+        var endYr = $("#endYear-input").val().trim();
+        var numResults = $("#endYear-input").val().trim();
+        url += '?' + $.param({
+          'api-key': "cb0e0c426f6c48d089f6bb0fef29bddb",
+          'q': searchTerm,
+          'begin_date': startYr + "0101",
+          'end_date': endYr + "0101"
+        });
+
+        $.ajax({
+                url: url,
+                method: "GET"
+              }).done(function(results) {
+              console.log(results);
+          for (i = 0; i < numResults; i++){
+            var title = results.response.docs[i].headline.main;
+            $("#articles").append("<h4>"+title+"</h4>");
+          }
+        });
+    });
+        
+    $("#clearBtn").on("click", function(event) {
+        event.preventDefault();
+        $("#term-input").val("");
+        $("#num-input").val("");
+        $("#startYear-input").val("");
+        $("#endYear-input").val("");
+        $("#articles").empty();
+    });
+  
+
+      
+  </script>
+  
+</body>
